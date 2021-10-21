@@ -7,7 +7,7 @@ DATA_PATH = 'data/survey_results_public.csv'
 #DATA_PATH = 'data/small_sample.csv'
 
 df = pd.read_csv(DATA_PATH)
-#print(df.head())
+print(df.head())
 #print(df.describe())
 
 fig_1 = plt.figure(num = 1, figsize = (5, 5))
