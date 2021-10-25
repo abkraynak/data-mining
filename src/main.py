@@ -67,6 +67,7 @@ def preprocess():
             if row[3] not in countries or row[2] != 'Employed full-time':
                 skip.append(row[0])
 
+        # Print 
         print(len(skip))
 
 if __name__ == '__main__':
