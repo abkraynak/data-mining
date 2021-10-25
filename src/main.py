@@ -18,38 +18,35 @@ FILE_PATH = 'data/survey_results_public.csv'
 #-age correlation with languages known
 #-age 1st coded correlation with salary and degree recieved
 
-def preprocess():
+def preprocess(path: str):
     # Rows from CSV file to skip
     skip = []
 
     # Countries we want data from
     countries = [
-        'United States of America', 
-        'United Kingdom of Great Britain and Northern Ireland',
+        'Austria',
+        'Belgium',
+        'Canada',
+        'Denmark',
+        'Finland',
         'France',
         'Germany',
-        'Switzerland',
-        'Canada',
+        'Iceland',
+        'Ireland',
+        'Italy',
+        'Luxembourg'
+        'Netherlands',
+        'Norway',
+        'Poland',
         'Portugal',
         'Spain',
-        'Netherlands',
-        'Italy',
-        'Poland',
         'Sweden',
-        'Belgium'
-        'Finland',
-        'Denmark',
-        'Austria',
-        'Bulgaria',
-        'Croatia',
-        'Estonia',
-        'Czech Republic',
-        'Hungary',
-        'Ireland',
-        'Luxembourg'
+        'Switzerland',
+        'United Kingdom of Great Britain and Northern Ireland',
+        'United States of America', 
     ]
 
-    with open(FILE_PATH, 'r') as csvfile:
+    with open(path, 'r') as csvfile:
         dr = csv.reader(csvfile)
         for row in dr:
             if row[3] not in countries or row[2] != 'Employed full-time' or row[47] == 'NA':
@@ -58,18 +55,10 @@ def preprocess():
 
         # print(len(skip))
 
-        df = pd.read_csv(FILE_PATH, skiprows=skip)
-        print(df.head())
-        #print(df.describe())
-
+        df = pd.read_csv(path, skiprows = skip)
         return df
 
-        #fig_1 = plt.figure(num = 1, figsize = (5, 5))
-        #salary = fig_1.add_subplot()
-
-        #salary.hist(df.ConvertedCompYearly)
-
-        #plt.show()
-
 if __name__ == '__main__':
-    preprocess()
+    df = preprocess(FILE_PATH)
+    print(df.head())
+    print(df.describe())
