@@ -51,21 +51,21 @@ def preprocess():
 
     with open(FILE_PATH, 'r') as csvfile:
         dr = csv.reader(csvfile)
-        print('here')
         for row in dr:
             if row[3] not in countries or row[2] != 'Employed full-time' or row[47] == 'NA':
-                if row[0] != 'ResponseId':
+                if row[0] != 'ResponseId': # Skip the first row
                     skip.append(int(row[0]))
 
-        # Print 
-        print(len(skip))
+        # print(len(skip))
 
         df = pd.read_csv(FILE_PATH, skiprows=skip)
         print(df.head())
         #print(df.describe())
 
-        fig_1 = plt.figure(num = 1, figsize = (5, 5))
-        salary = fig_1.add_subplot()
+        return df
+
+        #fig_1 = plt.figure(num = 1, figsize = (5, 5))
+        #salary = fig_1.add_subplot()
 
         #salary.hist(df.ConvertedCompYearly)
 
