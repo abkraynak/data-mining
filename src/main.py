@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import csv
 import statistics as st
+import math as mth
 
 FILE_PATH = 'data/survey_results_public.csv'
 #FILE_PATH = 'data/small_sample.csv'
@@ -85,9 +86,10 @@ def get_nb_stats(l) -> list:
     res = []
     for element in l:
         res.append(stats_calc(element))
-
     return res
 
+def calc_nb(x: float, mean: float, stdev: float, var: float) -> float:
+    return (1 / (mth.sqrt(2 * mth.pi) * stdev) ) * mth.exp(-((x - mean) ** 2) / (2 * var))
 
 def NBone_att(dr, values: list):
     print(dr)
