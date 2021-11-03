@@ -66,7 +66,7 @@ def preprocess(path: str, values: list):
         for row in dr:
             if row[47] != 'NA' and row[7] != 'NA':
                 if row[0] != 'ResponseId': # Skip the first row
-                    values[age[row[7]]].append(int(row[47]))
+                    values[age_dict[row[7]]].append(int(row[47]))
         print(values)
         #NBone_att(dr, agefirstcoded)
 
