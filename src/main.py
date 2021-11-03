@@ -74,11 +74,18 @@ def preprocess(path: str, values: list):
         df = pd.read_csv(path, skiprows = skip)
         return df
 
-def stats_calc(l: list):
+def stats_calc(l: list) -> list:
     res = []
     res.append(st.mean(l))
     res.append(st.stdev(l))
     res.append(st.variance(l))
+    return res
+
+def get_nb_stats(l) -> list:
+    res = []
+    for element in l:
+        res.append(stats_calc(element))
+
     return res
 
 
@@ -98,5 +105,5 @@ if __name__ == '__main__':
     #print(df.head())
     #print(df.describe())
 
-    print(stats_calc(agefirstcoded[6]))
+    print(get_nb_stats(agefirstcoded))
 
