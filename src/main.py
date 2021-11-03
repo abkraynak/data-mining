@@ -10,6 +10,8 @@ FILE_PATH = 'data/survey_results_public.csv'
 #data pre-processing
 #read all information in and copy values we like into a new csv file 
 #disregard students, people living in the United States
+#DONE
+
 
 #Insights to find
 #-correlation between language and salary
@@ -58,7 +60,13 @@ def preprocess(path: str):
         df = pd.read_csv(path, skiprows = skip)
         return df
 
+def NBone_att(df, colname):
+    
+
+#def NBagefirstcoded()
+
+
 if __name__ == '__main__':
     df = preprocess(FILE_PATH)
     print(df.head())
-    print(df.describe())
+    #print(df.describe())
