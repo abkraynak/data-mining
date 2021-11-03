@@ -3,6 +3,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import csv
+import statistics as st
 
 FILE_PATH = 'data/survey_results_public.csv'
 #FILE_PATH = 'data/small_sample.csv'
@@ -67,13 +68,18 @@ def preprocess(path: str, values: list):
             if row[47] != 'NA' and row[7] != 'NA':
                 if row[0] != 'ResponseId': # Skip the first row
                     values[age_dict[row[7]]].append(int(row[47]))
-        print(values)
+        #print(values)
         #NBone_att(dr, agefirstcoded)
 
         df = pd.read_csv(path, skiprows = skip)
         return df
 
-
+def stats_calc(l: list):
+    res = []
+    res.append(st.mean(l))
+    res.append(st.stdev(l))
+    res.append(st.variance(l))
+    return res
 
 
 def NBone_att(dr, values: list):
@@ -91,4 +97,6 @@ if __name__ == '__main__':
     df = preprocess(FILE_PATH, agefirstcoded)
     #print(df.head())
     #print(df.describe())
+
+    print(stats_calc(agefirstcoded[6]))
 
