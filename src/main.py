@@ -161,28 +161,24 @@ if __name__ == '__main__':
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
 
-    # Get testing salary
-    sal = input('Enter your yearly salary in USD: ')
-    salary_probs = nb(70000, get_nb_stats(salary_age1stcode))
-    print()
-    #print(salary_probs)
+    while True:
+        # Get testing salary
+        sal = int(input('Enter your yearly salary in USD: '))
+        salary_probs = nb(sal, get_nb_stats(salary_age1stcode))
+        print()
+        #print(salary_probs)
 
-    # Get testing gender
-    print('Man: 0\nWoman: 1\nNon-binary, genderqueer, or gender non-conforming: 2')
-    gen_idx = int(input('Select your gender: '))
-    gen = get_category(gender_dict, gen_idx)
-    gender_probs = nominal_prob_list(gen, gender_age1stcode, gender_dict)
-    print()
-    #print(gender_probs)
+        # Get testing gender
+        print('Man: 0\nWoman: 1\nNon-binary, genderqueer, or gender non-conforming: 2')
+        gen_idx = int(input('Select your gender: '))
+        gen = get_category(gender_dict, gen_idx)
+        gender_probs = nominal_prob_list(gen, gender_age1stcode, gender_dict)
+        print()
+        #print(gender_probs)
 
-    res = get_final_probs(salary_probs, gender_probs)
-    #print(res)
+        res = get_final_probs(salary_probs, gender_probs)
+        #print(res)
 
-    #hi = max(res)
-    #print(res.index(hi))
+        print('We think you first started coding at an age', get_category(age_dict, res.index(max(res))))
 
-    print('We think you first started coding at an age', get_category(age_dict, res.index(max(res))))
-    
-
-
-    #print(totalclasslabelprob(gender_age1stcode, age_dict, '11 - 17 years'))
+        #print(totalclasslabelprob(gender_age1stcode, age_dict, '11 - 17 years'))
