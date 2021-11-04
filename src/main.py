@@ -111,7 +111,8 @@ def nb(x: float, stats) -> list:
         res.append(calc_nb(x, l[0], l[1], l[2]))
     return res
 
-def nominal_prob(query: str, data: list, lookup: dict):
+def nominal_prob(query: str, data: list, lookup: dict) -> float:
+    # Calculates probability for nominal attributes under Naive Bayes rules
     return data[lookup[query]] / sum(data)
 
 def NBone_att(dr, values: list):
