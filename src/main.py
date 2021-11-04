@@ -153,28 +153,35 @@ def NBone_att(dr, values: list):
 
 
 if __name__ == '__main__':
+    print('Running pre-processing . . .')
     df = preprocess(FILE_PATH, salary_age1stcode, gender_age1stcode)
+    print('Ready')
+    print()
     #print(df.head())
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
 
+    # Get testing salary
+    sal = input('Enter your yearly salary in USD: ')
     salary_probs = nb(70000, get_nb_stats(salary_age1stcode))
+    print()
     #print(salary_probs)
 
-    
-
-    #print(nominal_prob('Man', gender_age1stcode[0], gender_dict))
-
-    gender_probs = nominal_prob_list('Woman', gender_age1stcode, gender_dict)
+    # Get testing gender
+    print('Man: 0\nWoman: 1\nNon-binary, genderqueer, or gender non-conforming: 2')
+    gen_idx = int(input('Select your gender: '))
+    gen = get_category(gender_dict, gen_idx)
+    gender_probs = nominal_prob_list(gen, gender_age1stcode, gender_dict)
+    print()
     #print(gender_probs)
 
     res = get_final_probs(salary_probs, gender_probs)
-    print(res)
+    #print(res)
 
-    hi = max(res)
-    print(res.index(hi))
+    #hi = max(res)
+    #print(res.index(hi))
 
-    print(get_category(age_dict, res.index(hi)))
+    print('We think you first started coding at an age', get_category(age_dict, res.index(max(res))))
     
 
 
