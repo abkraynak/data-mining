@@ -29,7 +29,6 @@ gender_dict = {'Man': 0, 'Woman': 1, 'Non-binary, genderqueer, or gender non-con
 gender_age1stcode = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
 
-
 def preprocess(path: str, values: list, gender: list):
     # Rows from CSV file to skip
     skip = []
@@ -115,6 +114,10 @@ def nominal_prob(query: str, data: list, lookup: dict) -> float:
     # Calculates probability for nominal attributes under Naive Bayes rules
     return data[lookup[query]] / sum(data)
 
+def totalclasslabelprob(data: list, lookup: dict, query: str):
+    return (sum(data[lookup[query]]))/sum(data[i] for i in range (len(data)))
+
+
 def NBone_att(dr, values: list):
     print(dr)
     for row in dr:
@@ -132,6 +135,7 @@ if __name__ == '__main__':
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
     #print(nb(500000, get_nb_stats(agefirstcoded)))
+    countrows = 0
 
     print(nominal_prob('Man', gender_age1stcode[0], gender_dict))
-
+    print(totalclasslabelprob(gender_age1stcode, age_dict, '35 - 44 years'))
