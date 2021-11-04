@@ -114,8 +114,12 @@ def nominal_prob(query: str, data: list, lookup: dict) -> float:
     # Calculates probability for nominal attributes under Naive Bayes rules
     return data[lookup[query]] / sum(data)
 
+def column_sum(lst):  
+    return [sum(i) for i in zip(*lst)]
+
 def totalclasslabelprob(data: list, lookup: dict, query: str):
-    return (sum(data[lookup[query]]))/sum(data[i] for i in range (len(data)))
+    #print(sum(list(data[j] for j in range (len(data[0])))))
+    return (sum(data[lookup[query]])) / sum(column_sum(data))
 
 
 def NBone_att(dr, values: list):
@@ -137,5 +141,9 @@ if __name__ == '__main__':
     #print(nb(500000, get_nb_stats(agefirstcoded)))
     countrows = 0
 
+
+    temp = [[1, 2, 3], [2,2,4]]    
+    print(list((temp[i]) for i in range(2)))
+
     print(nominal_prob('Man', gender_age1stcode[0], gender_dict))
-    print(totalclasslabelprob(gender_age1stcode, age_dict, '35 - 44 years'))
+    print(totalclasslabelprob(gender_age1stcode, age_dict, '11 - 17 years'))
