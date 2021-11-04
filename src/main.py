@@ -111,8 +111,8 @@ def nb(x: float, stats) -> list:
         res.append(calc_nb(x, l[0], l[1], l[2]))
     return res
 
-def nominal_prob(gen: str, data: list):
-    return data[gender_dict[gen]] / sum(data)
+def nominal_prob(query: str, data: list, lookup: dict):
+    return data[lookup[query]] / sum(data)
 
 def NBone_att(dr, values: list):
     print(dr)
@@ -132,5 +132,5 @@ if __name__ == '__main__':
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
     #print(nb(500000, get_nb_stats(agefirstcoded)))
 
-    print(nominal_prob('Man', gender_age1stcode[0]))
+    print(nominal_prob('Man', gender_age1stcode[0], gender_dict))
 
