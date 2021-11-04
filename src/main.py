@@ -80,7 +80,7 @@ def preprocess(path: str, values: list, gender: list):
                 if row[0] != 'ResponseId': # Skip the first row
                     gender[age_dict[row[7]]][gender_dict[row[39]]] += 1
                     
-        print(gender)
+        #print(gender)
         #NBone_att(dr, agefirstcoded)
 
         df = pd.read_csv(path, skiprows = skip)
@@ -114,6 +114,12 @@ def nominal_prob(query: str, data: list, lookup: dict) -> float:
     # Calculates probability for nominal attributes under Naive Bayes rules
     return data[lookup[query]] / sum(data)
 
+def nominal_prob_list(query: str, data: list, lookup: dict) -> list:
+    res = []
+    for i in range(len(data)):
+        res.append(nominal_prob(query, data[i], lookup))
+    return res
+
 def column_sum(lst):  
     return [sum(i) for i in zip(*lst)]
 
@@ -121,6 +127,19 @@ def totalclasslabelprob(data: list, lookup: dict, query: str):
     #print(sum(list(data[j] for j in range (len(data[0])))))
     return (sum(data[lookup[query]])) / sum(column_sum(data))
 
+def get_final_probs(l1: list, l2: list):
+    res = []
+
+    for i in range(len(l1)):
+        res.append(l1[i] * l2[i])
+
+    return res
+
+def get_category(lookup: dict, pos: int) -> str:
+    itemsList = lookup.items()
+    for item in itemsList:
+        if item[1] == pos:
+            return item[0]
 
 def NBone_att(dr, values: list):
     print(dr)
@@ -138,12 +157,25 @@ if __name__ == '__main__':
     #print(df.head())
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
-    #print(nb(500000, get_nb_stats(agefirstcoded)))
-    countrows = 0
+
+    salary_probs = nb(70000, get_nb_stats(salary_age1stcode))
+    #print(salary_probs)
+
+    
+
+    #print(nominal_prob('Man', gender_age1stcode[0], gender_dict))
+
+    gender_probs = nominal_prob_list('Woman', gender_age1stcode, gender_dict)
+    #print(gender_probs)
+
+    res = get_final_probs(salary_probs, gender_probs)
+    print(res)
+
+    hi = max(res)
+    print(res.index(hi))
+
+    print(get_category(age_dict, res.index(hi)))
+    
 
 
-    temp = [[1, 2, 3], [2,2,4]]    
-    print(list((temp[i]) for i in range(2)))
-
-    print(nominal_prob('Man', gender_age1stcode[0], gender_dict))
-    print(totalclasslabelprob(gender_age1stcode, age_dict, '11 - 17 years'))
+    #print(totalclasslabelprob(gender_age1stcode, age_dict, '11 - 17 years'))
