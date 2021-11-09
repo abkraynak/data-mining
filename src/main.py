@@ -159,7 +159,6 @@ def get_category(lookup: dict, pos: int) -> str:
         if item[1] == pos:
             return item[0]
 
-
 def validate(sal: int, gen: str, target: str):
     salary_probs = nb(sal, get_nb_stats(salary_age1stcode))
     gender_probs = nominal_prob_list(gen, gender_age1stcode, gender_dict)
@@ -173,11 +172,13 @@ def get_accuracy(path: str):
         dr = csv.reader(csvfile)
         for row in dr:
             if row[0] != 'ResponseId': # Skip the first row
-                print(int(row[47]), row[39], row[7])
+                #print(int(row[47]), row[39], row[7])
+                if total > 50: 
+                    break
                 if validate(int(row[47]), row[39], row[7]):
                     valid += 1
                 total += 1
-    
+        print(valid)
     return valid // total
 
 def NBone_att(dr, values: list):
