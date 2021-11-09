@@ -60,28 +60,13 @@ def preprocess(path: str, values: list, gender: list):
     with open(path, 'r') as csvfile:
         dr = csv.reader(csvfile)
         for row in dr:
-            if row[3] not in countries or row[2] != 'Employed full-time' or row[47] == 'NA':
-                #print(row[3])
-                if row[0] != 'ResponseId': # Skip the first row
+            if row[0] != 'ResponseId': # Skip the first row
+                if row[3] not in countries or row[2] != 'Employed full-time' or row[47] == 'NA':
                     skip.append(int(row[0]))
-
-        # print(len(skip))
-    with open(path, 'r') as csvfile:
-        dr = csv.reader(csvfile)
-        for row in dr:
-            if row[47] != 'NA' and row[7] != 'NA':
-                if row[0] != 'ResponseId': # Skip the first row
+                if row[47] != 'NA' and row[7] != 'NA':
                     values[age_dict[row[7]]].append(int(row[47]))
-
-    with open(path, 'r') as csvfile:
-        dr = csv.reader(csvfile)
-        for row in dr:
-            if (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
-                if row[0] != 'ResponseId': # Skip the first row
+                if (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
                     gender[age_dict[row[7]]][gender_dict[row[39]]] += 1
-                    
-        #print(gender)
-        #NBone_att(dr, agefirstcoded)
 
         df = pd.read_csv(path, skiprows = skip)
         return df
@@ -150,6 +135,10 @@ def NBone_att(dr, values: list):
     
 
 #def NBagefirstcoded()
+
+
+
+
 
 
 if __name__ == '__main__':
