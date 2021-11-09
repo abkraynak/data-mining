@@ -57,19 +57,43 @@ def preprocess(path: str, values: list, gender: list):
         'United States of America', 
     ]
 
+    fields = []
+    testing_rows = []
+    training_rows = []
+
     with open(path, 'r') as csvfile:
         dr = csv.reader(csvfile)
         for row in dr:
-            if row[0] != 'ResponseId': # Skip the first row
-                if row[3] not in countries or row[2] != 'Employed full-time' or row[47] == 'NA':
-                    skip.append(int(row[0]))
-                if row[47] != 'NA' and row[7] != 'NA':
-                    values[age_dict[row[7]]].append(int(row[47]))
-                if (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
-                    gender[age_dict[row[7]]][gender_dict[row[39]]] += 1
+            if row[0] == 'ResponseId': 
+                fields = row
+            else:
+                if row[3] in countries and row[2] == 'Employed full-time' and row[47] != 'NA':
+                    if int(row[0]) % 5 == 0:
+                        testing_rows.append(row)
+                    else:
+                        training_rows.append(row)
+                
+        #print(len(testing_rows))
+        #print(len(training_rows))
 
-        df = pd.read_csv(path, skiprows = skip)
-        return df
+
+                #if row[3] not in countries or row[2] != 'Employed full-time' or row[47] == 'NA':
+                #    skip.append(int(row[0]))
+                #if row[47] != 'NA' and row[7] != 'NA':
+                #    values[age_dict[row[7]]].append(int(row[47]))
+                #if (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
+                #    gender[age_dict[row[7]]][gender_dict[row[39]]] += 1
+
+    with open('testing.csv', 'w') as csvfile:
+        csvwriter = csv.writer(csvfile) 
+        csvwriter.writerow(fields) 
+        csvwriter.writerows(testing_rows)
+
+    with open('training.csv', 'w') as csvfile:
+        csvwriter = csv.writer(csvfile) 
+        csvwriter.writerow(fields) 
+        csvwriter.writerows(training_rows)
+
 
 def stats_calc(l: list) -> list:
     # Returns list containing mean, stdev, and variance from list
