@@ -29,7 +29,7 @@ gender_dict = {'Man': 0, 'Woman': 1, 'Non-binary, genderqueer, or gender non-con
 gender_age1stcode = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
 
-def preprocess(path: str, values: list, gender: list):
+def preprocess(path: str):
     # Rows from CSV file to skip
     skip = []
 
@@ -67,7 +67,7 @@ def preprocess(path: str, values: list, gender: list):
             if row[0] == 'ResponseId': 
                 fields = row
             else:
-                if row[3] in countries and row[2] == 'Employed full-time' and row[47] != 'NA':
+                if row[3] in countries and row[2] == 'Employed full-time' and row[47] != 'NA' and (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
                     if int(row[0]) % 5 == 0:
                         testing_rows.append(row)
                     else:
@@ -94,6 +94,15 @@ def preprocess(path: str, values: list, gender: list):
         csvwriter.writerow(fields) 
         csvwriter.writerows(training_rows)
 
+def nb_model(path: str, values: list, gender: list):
+    with open(path, 'r') as csvfile:
+        dr = csv.reader(csvfile)
+        for row in dr:
+            if row[0] != 'ResponseId': # Skip the first row
+                if row[47] != 'NA' and row[7] != 'NA':
+                    values[age_dict[row[7]]].append(int(row[47]))
+                if (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
+                    gender[age_dict[row[7]]][gender_dict[row[39]]] += 1
 
 def stats_calc(l: list) -> list:
     # Returns list containing mean, stdev, and variance from list
@@ -150,29 +159,48 @@ def get_category(lookup: dict, pos: int) -> str:
         if item[1] == pos:
             return item[0]
 
+
+def validate(sal: int, gen: str, target: str):
+    salary_probs = nb(sal, get_nb_stats(salary_age1stcode))
+    gender_probs = nominal_prob_list(gen, gender_age1stcode, gender_dict)
+    res = get_final_probs(salary_probs, gender_probs)
+    return get_category(age_dict, res.index(max(res))) == target
+
+def get_accuracy(path: str):
+    total = 0
+    valid = 0
+    with open(path, 'r') as csvfile:
+        dr = csv.reader(csvfile)
+        for row in dr:
+            if row[0] != 'ResponseId': # Skip the first row
+                print(int(row[47]), row[39], row[7])
+                if validate(int(row[47]), row[39], row[7]):
+                    valid += 1
+                total += 1
+    
+    return valid // total
+
 def NBone_att(dr, values: list):
     print(dr)
     for row in dr:
         print(row)
         values[age(row[7])].append(row[47])
     print(values)
-    
-
-#def NBagefirstcoded()
-
-
-
-
 
 
 if __name__ == '__main__':
     print('Running pre-processing . . .')
-    df = preprocess(FILE_PATH, salary_age1stcode, gender_age1stcode)
+    preprocess(FILE_PATH)
+    nb_model('training.csv', salary_age1stcode, gender_age1stcode)
     print('Ready')
     print()
     #print(df.head())
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
+
+
+    print(get_accuracy('testing.csv'))
+
 
     while True:
         # Get testing salary
@@ -193,5 +221,6 @@ if __name__ == '__main__':
         #print(res)
 
         print('We think you first started coding at an age', get_category(age_dict, res.index(max(res))))
-
         #print(totalclasslabelprob(gender_age1stcode, age_dict, '11 - 17 years'))
+
+
