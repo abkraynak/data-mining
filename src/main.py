@@ -5,6 +5,12 @@ import matplotlib.pyplot as plt
 import csv
 import statistics as st
 import math as mth
+from sklearn.tree import DecisionTreeClassifier
+import pydotplus
+from sklearn import tree
+import matplotlib.image as pltimg
+
+
 
 FILE_PATH = 'data/survey_results_public.csv'
 #FILE_PATH = 'data/small_sample.csv'
@@ -93,6 +99,31 @@ def preprocess(path: str):
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
         csvwriter.writerows(training_rows)
+
+cols = [
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], [], [],
+            [], [], [], []
+]
+
+def read_to_cols(cols: list, path: str):
+    with open(path, 'r') as csvfile:
+        dr = csv.reader(csvfile)
+        for row in dr:
+            if row[0] != 'ResponseId': 
+                for i in range(1, 47):
+                    if (i >= 16 and i <= 29) or i == 8 or i == 11 or i == 31 or i == 32 or (i >= 41 and i <= 44):
+                        continue
+                    elif row[i] not in cols[i]:
+                        cols[i].append(row[i])
+    #print(cols)
 
 def nb_model(path: str, values: list, gender: list):
     with open(path, 'r') as csvfile:
@@ -189,10 +220,60 @@ def NBone_att(dr, values: list):
     print(values)
 
 
+def gen_dict(vals):
+    d = {}
+    i = 0
+    for val in vals:
+        d[val] = i
+        i += 1
+
+    return d
+
+
+
+
 if __name__ == '__main__':
+    #df = pd.read_csv('training.csv')
+
+    read_to_cols(cols, 'training.csv')
+
+    mainbr_dict = gen_dict(cols[1])
+    employ_dict = gen_dict(cols[2])
+    country_dict = gen_dict(cols[3])
+    usstate_dict = gen_dict(cols[4])
+    ukcountry_dict = gen_dict(cols[5])
+
+    edulev_dict = gen_dict(cols[6])
+    age_dict_2 = gen_dict(cols[7])
+    yrscode_dict = gen_dict(cols[9])
+    yrscode_pro_dict = gen_dict(cols[10])
+
+    orgsz_dict = gen_dict(cols[12])
+    curr_dict = gen_dict(cols[13])
+    comptotal_dict = gen_dict(cols[14])
+    compfreq_dict = gen_dict(cols[15])
+    opsys_dict = gen_dict(cols[30])
+
+    so_visit_freq_dict = gen_dict(cols[33])
+    so_accnt_dict = gen_dict(cols[34])
+    so_partic_dict = gen_dict(cols[35])
+    so_comm_dict = gen_dict(cols[36])
+    other_comms_dict = gen_dict(cols[37])
+
+    age_dict = gen_dict(cols[38])
+    gen_dict_2 = gen_dict(cols[39])
+    trans_dict = gen_dict(cols[40])
+    surv_len_dict = gen_dict(cols[45])
+    surv_ease_dict = gen_dict(cols[46])
+
+
+    print(age_dict_2)
+    #print(age_dict)
+
+
     print('Running pre-processing . . .')
     preprocess(FILE_PATH)
-    nb_model('training.csv', salary_age1stcode, gender_age1stcode)
+    #nb_model('training.csv', salary_age1stcode, gender_age1stcode)
     print('Ready')
     print()
     #print(df.head())
