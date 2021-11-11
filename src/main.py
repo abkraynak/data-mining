@@ -13,6 +13,32 @@ import matplotlib.image as pltimg
 
 
 FILE_PATH = 'data/survey_results_public.csv'
+
+eu = [
+        'Austria',
+        'Belgium',
+        'Canada',
+        'Denmark',
+        'Finland',
+        'France',
+        'Germany',
+        'Iceland',
+        'Ireland',
+        'Italy',
+        'Luxembourg'
+        'Netherlands',
+        'Norway',
+        'Poland',
+        'Portugal',
+        'Spain',
+        'Sweden',
+        'Switzerland',
+        'United Kingdom of Great Britain and Northern Ireland',
+    ]
+
+us = ['United States of America']
+
+
 #FILE_PATH = 'data/small_sample.csv'
 
 #data pre-processing
@@ -35,33 +61,8 @@ gender_dict = {'Man': 0, 'Woman': 1, 'Non-binary, genderqueer, or gender non-con
 gender_age1stcode = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
 
-def preprocess(path: str):
-    # Rows from CSV file to skip
-    skip = []
-
+def preprocess(path: str, countries: list, sel: str):
     # Countries we want data from
-    countries = [
-        'Austria',
-        'Belgium',
-        'Canada',
-        'Denmark',
-        'Finland',
-        'France',
-        'Germany',
-        'Iceland',
-        'Ireland',
-        'Italy',
-        'Luxembourg'
-        'Netherlands',
-        'Norway',
-        'Poland',
-        'Portugal',
-        'Spain',
-        'Sweden',
-        'Switzerland',
-        'United Kingdom of Great Britain and Northern Ireland',
-        'United States of America', 
-    ]
 
     fields = []
     testing_rows = []
@@ -78,24 +79,14 @@ def preprocess(path: str):
                         testing_rows.append(row)
                     else:
                         training_rows.append(row)
-                
-        #print(len(testing_rows))
-        #print(len(training_rows))
 
 
-                #if row[3] not in countries or row[2] != 'Employed full-time' or row[47] == 'NA':
-                #    skip.append(int(row[0]))
-                #if row[47] != 'NA' and row[7] != 'NA':
-                #    values[age_dict[row[7]]].append(int(row[47]))
-                #if (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
-                #    gender[age_dict[row[7]]][gender_dict[row[39]]] += 1
-
-    with open('testing.csv', 'w') as csvfile:
+    with open('data/' + sel + '_testing.csv', 'w') as csvfile:
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
         csvwriter.writerows(testing_rows)
 
-    with open('training.csv', 'w') as csvfile:
+    with open('data/' + sel + '_training.csv', 'w') as csvfile:
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
         csvwriter.writerows(training_rows)
@@ -233,17 +224,57 @@ def gen_dict(vals):
 
 
 if __name__ == '__main__':
-    #df = pd.read_csv('training.csv')
+    print('Running pre-processing . . .')
+    preprocess(FILE_PATH, us, 'us')
+    preprocess(FILE_PATH, eu, 'eu')
+    #nb_model('training.csv', salary_age1stcode, gender_age1stcode)
+    print('Ready')
+    print()
+
+
+
+    df = pd.read_csv('training.csv')
 
     read_to_cols(cols, 'training.csv')
 
     mainbr_dict = gen_dict(cols[1])
+    df['MainBranch'] = df['MainBranch'].map(mainbr_dict)
+
     employ_dict = gen_dict(cols[2])
+    df['Employment'] = df['Employment'].map(employ_dict)
+
     country_dict = gen_dict(cols[3])
+    df['Country'] = df['Country'].map(country_dict)
+
+    edlev_dict = gen_dict(cols[6])
+    print(edlev_dict)
+    #df['EdLevel'] = df['EdLevel'].map(edlev_dict)
+
+    compfreq_dict = gen_dict(cols[15])
+    df['CompFreq'] = df['CompFreq'].map(compfreq_dict)
+
+    features = ['MainBranch', 'Employment', 'CompFreq']
+    x = df[features]
+    y = df['Country']
+
+    dtree = DecisionTreeClassifier()
+    dtree = dtree.fit(x, y)
+
+    data = tree.export_graphviz(dtree, out_file=None, feature_names = features)
+    graph = pydotplus.graph_from_dot_data(data)
+    print(graph.to_string())
+    
+    graph.write_png('mytree.png')
+    img = pltimg.imread('mytree.png')
+
+    imgplot = plt.imshow(img)
+    plt.show()
+
     usstate_dict = gen_dict(cols[4])
     ukcountry_dict = gen_dict(cols[5])
 
-    edulev_dict = gen_dict(cols[6])
+
+
     age_dict_2 = gen_dict(cols[7])
     yrscode_dict = gen_dict(cols[9])
     yrscode_pro_dict = gen_dict(cols[10])
@@ -267,15 +298,11 @@ if __name__ == '__main__':
     surv_ease_dict = gen_dict(cols[46])
 
 
-    print(age_dict_2)
+    #print(age_dict_2)
     #print(age_dict)
 
 
-    print('Running pre-processing . . .')
-    preprocess(FILE_PATH)
-    #nb_model('training.csv', salary_age1stcode, gender_age1stcode)
-    print('Ready')
-    print()
+
     #print(df.head())
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
