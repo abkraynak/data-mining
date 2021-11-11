@@ -298,7 +298,19 @@ def gen_all_dicts():
     x = df.iloc[:, 0:16].values
     y = df.iloc[:, 16].values
 
-    x_
+    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+    sc = StandardScaler()
+    x_train = sc.fit_transform(x_train)
+    x_test = sc.transform(x_test)
+
+    regressor = RandomForestRegressor(n_estimators=20, random_state=0)
+    regressor.fit(x_train, y_train)
+    y_pred = regressor.predict(x_test)
+
+    print(confusion_matrix(y_test,y_pred))
+    print(classification_report(y_test,y_pred))
+    print(accuracy_score(y_test, y_pred))
 
 
 
