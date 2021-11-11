@@ -9,8 +9,7 @@ from sklearn.tree import DecisionTreeClassifier
 import pydotplus
 from sklearn import tree
 import matplotlib.image as pltimg
-
-
+import numpy as np
 
 FILE_PATH = 'data/original_dataset.csv'
 #FILE_PATH = 'data/original_dataset_sample.csv'
@@ -103,24 +102,16 @@ cols = [
             [], [], [], [], [],
             [], [], [], [], [],
             [], [], [], [], [],
-            [], [], [], [], [],
-            [], [], [], [], [],
-            [], [], [], [], [],
-            [], [], [], [], [],
-            [], [], [], [], [],
-            [], [], [], [], [],
-            [], [], [], []
+            [], []
 ]
 
 def read_to_cols(cols: list, path: str):
     with open(path, 'r') as csvfile:
         dr = csv.reader(csvfile)
         for row in dr:
-            if row[0] != 'ResponseId': 
-                for i in range(1, 47):
-                    if (i >= 16 and i <= 29) or i == 8 or i == 11 or i == 31 or i == 32 or (i >= 41 and i <= 44):
-                        continue
-                    elif row[i] not in cols[i]:
+            if row[0] != 'MainBranch': 
+                for i in range(17):
+                    if row[i] not in cols[i]:
                         cols[i].append(row[i])
     #print(cols)
 
@@ -230,22 +221,66 @@ def gen_dict(vals):
     return d
 
 
-def dt():
+def gen_all_dicts():
     df = pd.read_csv('data/us_training.csv')
-
     read_to_cols(cols, 'data/us_training.csv')
 
-    mainbr_dict = gen_dict(cols[1])
+    mainbr_dict = gen_dict(cols[0])
     df['MainBranch'] = df['MainBranch'].map(mainbr_dict)
+    print(mainbr_dict)
 
-    employ_dict = gen_dict(cols[2])
+
+    employ_dict = gen_dict(cols[1])
     df['Employment'] = df['Employment'].map(employ_dict)
+    print(employ_dict)
 
-    country_dict = gen_dict(cols[3])
+    country_dict = gen_dict(cols[2])
     df['Country'] = df['Country'].map(country_dict)
+    print(country_dict)
+
+    usstate_dict = gen_dict(cols[3])
+    df['US_State'] = df['US_State'].map(usstate_dict)
+    print(usstate_dict)
+
+
 
     edlev_dict = gen_dict(cols[6])
-    print(edlev_dict)
+
+
+    age_dict_2 = gen_dict(cols[4])
+    print(age_dict_2)
+
+    #yrscode_dict = gen_dict(cols[5])
+
+
+    #yrscode_pro_dict = gen_dict(cols[6])
+
+    orgsz_dict = gen_dict(cols[7])
+    print(orgsz_dict)
+
+    compfreq_dict = gen_dict(cols[8])
+    print(compfreq_dict)
+
+    opsys_dict = gen_dict(cols[9])
+    print(opsys_dict)
+
+    so_visit_freq_dict = gen_dict(cols[10])
+    print(so_visit_freq_dict)
+
+
+    so_accnt_dict = gen_dict(cols[11])
+    print(so_accnt_dict)
+    so_partic_dict = gen_dict(cols[12])
+    print(so_partic_dict)
+
+
+    #age_dict = gen_dict(cols[13])
+    gen_dict_2 = gen_dict(cols[14])
+    print(gen_dict_2)
+    trans_dict = gen_dict(cols[15])
+    print(trans_dict)
+    #
+    #print(edlev_dict)
     #df['EdLevel'] = df['EdLevel'].map(edlev_dict)
 
     compfreq_dict = gen_dict(cols[15])
@@ -255,45 +290,22 @@ def dt():
     x = df[features]
     y = df['Country']
 
-    dtree = DecisionTreeClassifier()
-    dtree = dtree.fit(x, y)
 
-    data = tree.export_graphviz(dtree, out_file=None, feature_names = features)
-    graph = pydotplus.graph_from_dot_data(data)
-    print(graph.to_string())
+
+    #dtree = DecisionTreeClassifier()
+    #dtree = dtree.fit(x, y)
+
+    #data = tree.export_graphviz(dtree, out_file=None, feature_names = features)
+    #graph = pydotplus.graph_from_dot_data(data)
+    #print(graph.to_string())
     
-    graph.write_png('mytree.png')
-    img = pltimg.imread('mytree.png')
+    #graph.write_png('mytree.png')
+    #img = pltimg.imread('mytree.png')
 
-    imgplot = plt.imshow(img)
-    plt.show()
-
-    usstate_dict = gen_dict(cols[4])
-    ukcountry_dict = gen_dict(cols[5])
+    #imgplot = plt.imshow(img)
+    #plt.show()
 
 
-
-    age_dict_2 = gen_dict(cols[7])
-    yrscode_dict = gen_dict(cols[9])
-    yrscode_pro_dict = gen_dict(cols[10])
-
-    orgsz_dict = gen_dict(cols[12])
-    curr_dict = gen_dict(cols[13])
-    comptotal_dict = gen_dict(cols[14])
-    compfreq_dict = gen_dict(cols[15])
-    opsys_dict = gen_dict(cols[30])
-
-    so_visit_freq_dict = gen_dict(cols[33])
-    so_accnt_dict = gen_dict(cols[34])
-    so_partic_dict = gen_dict(cols[35])
-    so_comm_dict = gen_dict(cols[36])
-    other_comms_dict = gen_dict(cols[37])
-
-    age_dict = gen_dict(cols[38])
-    gen_dict_2 = gen_dict(cols[39])
-    trans_dict = gen_dict(cols[40])
-    surv_len_dict = gen_dict(cols[45])
-    surv_ease_dict = gen_dict(cols[46])
 
 
     #print(age_dict_2)
@@ -309,15 +321,15 @@ if __name__ == '__main__':
     print('Ready')
     print()
 
-    print(age_dict)
+    #print(age_dict)
 
-    #dt()
+    gen_all_dicts()
 
     #print(df.head())
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
 
-    print(get_accuracy('data/us_testing.csv'))
+    #print(get_accuracy('data/us_testing.csv'))
 
 
     while True:
