@@ -6,6 +6,10 @@ import csv
 import statistics as st
 import math as mth
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import test_train_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import pydotplus
 from sklearn import tree
 import matplotlib.image as pltimg
@@ -284,11 +288,17 @@ def gen_all_dicts():
     #df['EdLevel'] = df['EdLevel'].map(edlev_dict)
 
     compfreq_dict = gen_dict(cols[15])
-    df['CompFreq'] = df['CompFreq'].map(compfreq_dict)
+    #df['CompFreq'] = df['CompFreq'].map(compfreq_dict)
 
-    features = ['MainBranch', 'Employment', 'CompFreq']
-    x = df[features]
-    y = df['Country']
+    #features = ['MainBranch', 'Employment', 'CompFreq']
+    #x = df[features]
+    #y = df['Country']
+
+
+    x = df.iloc[:, 0:16].values
+    y = df.iloc[:, 16].values
+
+    x_
 
 
 
