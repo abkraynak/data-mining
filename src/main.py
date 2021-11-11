@@ -12,7 +12,8 @@ import matplotlib.image as pltimg
 
 
 
-FILE_PATH = 'data/survey_results_public.csv'
+FILE_PATH = 'data/original_dataset.csv'
+#FILE_PATH = 'data/original_dataset_sample.csv'
 
 eu = [
         'Austria',
@@ -39,7 +40,6 @@ eu = [
 us = ['United States of America']
 
 
-#FILE_PATH = 'data/small_sample.csv'
 
 #data pre-processing
 #read all information in and copy values we like into a new csv file 
@@ -60,25 +60,33 @@ salary_age1stcode = [[], [], [], [], [], [], [], [], []]
 gender_dict = {'Man': 0, 'Woman': 1, 'Non-binary, genderqueer, or gender non-conforming': 2}
 gender_age1stcode = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
+del_cols = [46, 45, 44, 43, 42, 41, 37, 36, 32, 31, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 14, 13, 11, 8, 6, 5, 0]
+
+def rem_cols(row: list, cols: list):
+    for col in cols:
+        row.pop(col)   
+    return row
 
 def preprocess(path: str, countries: list, sel: str):
     # Countries we want data from
-
     fields = []
     testing_rows = []
     training_rows = []
 
     with open(path, 'r') as csvfile:
         dr = csv.reader(csvfile)
+        i = 0
         for row in dr:
-            if row[0] == 'ResponseId': 
+            row = rem_cols(row, del_cols)
+            if row[0] == 'MainBranch': 
                 fields = row
             else:
-                if row[3] in countries and row[2] == 'Employed full-time' and row[47] != 'NA' and (row[39] == 'Man' or row[39] == 'Woman' or row[39] == 'Non-binary, genderqueer, or gender non-conforming') and row[7] != 'NA':
-                    if int(row[0]) % 5 == 0:
+                if row[2] in countries and row[1] == 'Employed full-time' and row[16] != 'NA' and (row[14] == 'Man' or row[14] == 'Woman' or row[14] == 'Non-binary, genderqueer, or gender non-conforming') and row[5] != 'NA':
+                    if i % 5 == 0:
                         testing_rows.append(row)
                     else:
                         training_rows.append(row)
+            i += 1
 
 
     with open('data/' + sel + '_testing.csv', 'w') as csvfile:
@@ -182,6 +190,7 @@ def get_category(lookup: dict, pos: int) -> str:
             return item[0]
 
 def validate(sal: int, gen: str, target: str):
+    print(salary_age1stcode)
     salary_probs = nb(sal, get_nb_stats(salary_age1stcode))
     gender_probs = nominal_prob_list(gen, gender_age1stcode, gender_dict)
     res = get_final_probs(salary_probs, gender_probs)
@@ -192,9 +201,9 @@ def get_accuracy(path: str):
     valid = 0
     with open(path, 'r') as csvfile:
         dr = csv.reader(csvfile)
+        print('open')
         for row in dr:
             if row[0] != 'ResponseId': # Skip the first row
-                #print(int(row[47]), row[39], row[7])
                 if total > 50: 
                     break
                 if validate(int(row[47]), row[39], row[7]):
@@ -221,21 +230,10 @@ def gen_dict(vals):
     return d
 
 
+def dt():
+    df = pd.read_csv('data/us_training.csv')
 
-
-if __name__ == '__main__':
-    print('Running pre-processing . . .')
-    preprocess(FILE_PATH, us, 'us')
-    preprocess(FILE_PATH, eu, 'eu')
-    #nb_model('training.csv', salary_age1stcode, gender_age1stcode)
-    print('Ready')
-    print()
-
-
-
-    df = pd.read_csv('training.csv')
-
-    read_to_cols(cols, 'training.csv')
+    read_to_cols(cols, 'data/us_training.csv')
 
     mainbr_dict = gen_dict(cols[1])
     df['MainBranch'] = df['MainBranch'].map(mainbr_dict)
@@ -302,13 +300,24 @@ if __name__ == '__main__':
     #print(age_dict)
 
 
+if __name__ == '__main__':
+    print('Running pre-processing . . .')
+    preprocess(FILE_PATH, us, 'us')
+    preprocess(FILE_PATH, eu, 'eu')
+
+    #nb_model('training.csv', salary_age1stcode, gender_age1stcode)
+    print('Ready')
+    print()
+
+    print(age_dict)
+
+    #dt()
 
     #print(df.head())
     #print(df.describe())
     #print(calc_nb(75, 73.28, 5.4989, 30.238))
 
-
-    print(get_accuracy('testing.csv'))
+    print(get_accuracy('data/us_testing.csv'))
 
 
     while True:
