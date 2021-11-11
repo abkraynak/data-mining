@@ -6,14 +6,16 @@ import csv
 import statistics as st
 import math as mth
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import test_train_split
+from sklearn.model_selection import * #test_train_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import * #classification_report, confusion_matrix, accuracy_score
 import pydotplus
 from sklearn import tree
 import matplotlib.image as pltimg
 import numpy as np
+
+from preprocess import preprocess
 
 FILE_PATH = 'data/original_dataset.csv'
 #FILE_PATH = 'data/original_dataset_sample.csv'
@@ -21,7 +23,6 @@ FILE_PATH = 'data/original_dataset.csv'
 eu = [
         'Austria',
         'Belgium',
-        'Canada',
         'Denmark',
         'Finland',
         'France',
@@ -63,44 +64,8 @@ salary_age1stcode = [[], [], [], [], [], [], [], [], []]
 gender_dict = {'Man': 0, 'Woman': 1, 'Non-binary, genderqueer, or gender non-conforming': 2}
 gender_age1stcode = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-del_cols = [46, 45, 44, 43, 42, 41, 37, 36, 32, 31, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 14, 13, 11, 8, 6, 5, 0]
-
-def rem_cols(row: list, cols: list):
-    for col in cols:
-        row.pop(col)   
-    return row
-
-def preprocess(path: str, countries: list, sel: str):
-    # Countries we want data from
-    fields = []
-    testing_rows = []
-    training_rows = []
-
-    with open(path, 'r') as csvfile:
-        dr = csv.reader(csvfile)
-        i = 0
-        for row in dr:
-            row = rem_cols(row, del_cols)
-            if row[0] == 'MainBranch': 
-                fields = row
-            else:
-                if row[2] in countries and row[1] == 'Employed full-time' and row[16] != 'NA' and (row[14] == 'Man' or row[14] == 'Woman' or row[14] == 'Non-binary, genderqueer, or gender non-conforming') and row[5] != 'NA':
-                    if i % 5 == 0:
-                        testing_rows.append(row)
-                    else:
-                        training_rows.append(row)
-            i += 1
 
 
-    with open('data/' + sel + '_testing.csv', 'w') as csvfile:
-        csvwriter = csv.writer(csvfile) 
-        csvwriter.writerow(fields) 
-        csvwriter.writerows(testing_rows)
-
-    with open('data/' + sel + '_training.csv', 'w') as csvfile:
-        csvwriter = csv.writer(csvfile) 
-        csvwriter.writerow(fields) 
-        csvwriter.writerows(training_rows)
 
 cols = [
             [], [], [], [], [],
@@ -298,7 +263,7 @@ def gen_all_dicts():
     x = df.iloc[:, 0:16].values
     y = df.iloc[:, 16].values
 
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
 
     sc = StandardScaler()
     x_train = sc.fit_transform(x_train)
