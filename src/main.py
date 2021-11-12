@@ -17,6 +17,7 @@ import numpy as np
 
 from preprocess import preprocess
 from decision_tree import decision_tree
+from random_forest import random_forest
 from plot import plot_attr
 
 OG_FILE_PATH = 'data/original_dataset.csv'
@@ -202,9 +203,15 @@ if __name__ == '__main__':
     us_dt = decision_tree(us_model, TEST_SPLIT, False)
     eu_dt = decision_tree(eu_model, TEST_SPLIT, False)
 
+    # Random forest model
+    us_rf = random_forest(us_model, TEST_SPLIT, False)
+    eu_rf = random_forest(eu_model, TEST_SPLIT, False)
+
     # Plot original salary frequencies
     #plot_attr(us_model, 'ConvertedCompYearly')
     #plot_attr(eu_model, 'ConvertedCompYearly')
+
+
 
     names = list(us_model.drop(['ConvertedCompYearly'], axis=1))
     namesdf = us_model.drop(['ConvertedCompYearly'], axis=1)

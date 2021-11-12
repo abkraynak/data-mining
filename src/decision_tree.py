@@ -11,7 +11,7 @@ from sklearn.model_selection import *
 
 def best_tree_depth(model, x_train, y_train, test_split: float, verbose = False):
     score_list = ['neg_mean_squared_error', 'neg_mean_absolute_error']
-    search_depths = [4, 5, 6, 7,]
+    search_depths = [4, 5, 6, 7] # Tree depths to try, best is one with least error
     max_MSE = float('-inf')
     best_depth = 0
 
@@ -65,26 +65,27 @@ def print_dt_stats(r2: float, mae: float, mse: float, rmse: float) -> None:
     print()
 
 def decision_tree(model, test_split, verbose = False):
+    # Set up training and validation sets as numpy arrays
     x = np.asarray(model.drop(['ConvertedCompYearly'], axis=1)) # All data except salaries
     y = np.asarray(model['ConvertedCompYearly']) # Salaries only
     x_train, x_validate, y_train, y_validate = train_test_split(x, y, test_size=test_split, random_state=12345)
 
+    # Generate decision tree model
     dt = model_decision_tree(model, x_train, y_train, test_split, verbose)
+
+    # Print accuracy statistics of training and validation sets
     tr_pred = dt.predict(x_train)
     va_pred = dt.predict(x_validate)
-    #print(tr_pred)
-    #print(len(tr_pred))
-    #print(va_pred)
-    #print(len(va_pred))
-
     get_dt_stats(y_train, tr_pred, verbose)
     get_dt_stats(y_validate, va_pred, verbose)
 
+    # Print most important attributes to the decisiont ree
     ind_model = model.drop(['ConvertedCompYearly'], axis=1)
     lst = list(ind_model.columns)
     col_impt = pd.Series(dt.feature_importances_, index=lst)
     print(col_impt.nlargest(10).sort_values(ascending=False))
 
+    # Scatterplot of actual vs predicted of testing set
     fig, ax = plt.subplots()
     ax.scatter(y_validate, va_pred)
     ax.plot([y_validate.min(), y_validate.max()], [y_validate.min(), y.max()], 'k--', lw=4)
@@ -93,6 +94,7 @@ def decision_tree(model, test_split, verbose = False):
     plt.title('Predicted vs Actual ConvertedCompYearly')
     plt.show()
 
+    # Show decision tree image
     #dot_data = export_graphviz(dt, filled=True, rounded=True, feature_names=lst, out_file=None)
     #graph = graph_from_dot_data(dot_data)
     #graph = gv.Source(dot_data)
