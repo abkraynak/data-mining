@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import csv
 import statistics as st
 import math as mth
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.model_selection import * #test_train_split
+
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import * #classification_report, confusion_matrix, accuracy_score
@@ -16,6 +16,7 @@ import matplotlib.image as pltimg
 import numpy as np
 
 from preprocess import preprocess
+from decision_tree import best_tree_depth
 
 OG_FILE_PATH = 'data/original_dataset.csv'
 #OG_FILE_PATH = 'data/original_dataset_sample.csv'
@@ -209,18 +210,20 @@ if __name__ == '__main__':
     us_model = preprocess(OG_FILE_PATH, US_FILE_PATH, US, 'us')
     eu_model = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
 
+    #print(us_model.head())
+
     #plot_attr(us_model, 'ConvertedCompYearly')
     #plot_attr(eu_model, 'ConvertedCompYearly')
+
+    # Decision tree model
+    print(best_tree_depth(us_model, 0.2))
+    print(best_tree_depth(eu_model, 0.2))
 
     names = list(us_model.drop(['ConvertedCompYearly'], axis=1))
     namesdf = us_model.drop(['ConvertedCompYearly'], axis=1)
 
-    x = np.asarray(us_model.drop(['ConvertedCompYearly'], axis=1))
-    y = np.asarray(us_model['ConvertedCompYearly'])
 
-    x_train, x_validate, y_train, y_validate = train_test_split(x, y, test_size=0.2, random_state=12345)
 
-    
 
 
     #print(age_dict)

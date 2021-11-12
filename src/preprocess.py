@@ -94,5 +94,5 @@ def preprocess(og_path: str, co_path: str, countries: list, sel: str):
     df = clean_df(co_path)
     df_model = encode(df, nom_cols)
     print('Complete')
-    return df
+    return df_model
 
