@@ -58,7 +58,6 @@ def clean_csv(path: str, countries: list, sel: str):
 # Read CSV file with pandas, correct missing values, return updated dataframe
 def clean_df(path: str):
     df = pd.read_csv(path)
-
     #debug_data_summary(df) # Data summary
 
     # Replace missing values with NA or 0
@@ -78,14 +77,12 @@ def clean_df(path: str):
     df['Trans'].fillna('NA', inplace=True)
 
     #debug_data_summary(df) # Data summary
-
     return df
 
 def encode(df, nom_cols: list):
     model = pd.get_dummies(df, columns=nom_cols, drop_first=False)
-
+    
     #print_num_recs_attr(model) # Data summary
-
     return model
 
 def preprocess(og_path: str, co_path: str, countries: list, sel: str):
@@ -95,4 +92,3 @@ def preprocess(og_path: str, co_path: str, countries: list, sel: str):
     df_model = encode(df, nom_cols)
     print('Complete')
     return df_model
-

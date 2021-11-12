@@ -1,12 +1,12 @@
 # main.py
 
 import pandas as pd
-
+from sklearn import metrics
 import csv
 import statistics as st
 import math as mth
-
-
+from sklearn.model_selection import *
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import * #classification_report, confusion_matrix, accuracy_score
@@ -16,7 +16,7 @@ import matplotlib.image as pltimg
 import numpy as np
 
 from preprocess import preprocess
-from decision_tree import best_tree_depth
+from decision_tree import decision_tree
 from plot import plot_attr
 
 OG_FILE_PATH = 'data/original_dataset.csv'
@@ -48,13 +48,7 @@ EU = [
 
 US = ['United States of America']
 
-
-#Insights to find
-#-correlation between language and salary
-#-with years of experience and languages known, predict salary
-#-level of degree correlation with salary
-#-age correlation with languages known
-# Determine age1stCode category using Naive Bayes using yearly salary, gender, operating system, and degree recieved
+TEST_SPLIT = 0.2
 
 age_dict = {'Younger than 5 years': 0, '5 - 10 years': 1, '11 - 17 years': 2, '18 - 24 years': 3, 
     '25 - 34 years': 4, '35 - 44 years': 5, '45 - 54 years': 6, '55 - 64 years': 7, 'Older than 64 years': 8, 'NA': 9}
@@ -204,14 +198,13 @@ if __name__ == '__main__':
     us_model = preprocess(OG_FILE_PATH, US_FILE_PATH, US, 'us')
     eu_model = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
 
-    #print(us_model.head())
-
-    plot_attr(us_model, 'ConvertedCompYearly')
-    plot_attr(eu_model, 'ConvertedCompYearly')
-
     # Decision tree model
-    #print(best_tree_depth(us_model, 0.2))
-    #print(best_tree_depth(eu_model, 0.2))
+    us_dt = decision_tree(us_model, TEST_SPLIT, False)
+    eu_dt = decision_tree(eu_model, TEST_SPLIT, False)
+
+    # Plot original salary frequencies
+    #plot_attr(us_model, 'ConvertedCompYearly')
+    #plot_attr(eu_model, 'ConvertedCompYearly')
 
     names = list(us_model.drop(['ConvertedCompYearly'], axis=1))
     namesdf = us_model.drop(['ConvertedCompYearly'], axis=1)
