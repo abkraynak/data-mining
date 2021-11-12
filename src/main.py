@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 import statistics as st
 import math as mth
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import * #test_train_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
@@ -77,7 +77,6 @@ def read_to_cols(cols: list, path: str):
                         cols[i].append(row[i])
     #print(cols)
 
-
 def gen_dict(vals):
     d = {}
     i = 0
@@ -86,8 +85,6 @@ def gen_dict(vals):
         i += 1
 
     return d
-
-
 
 def gen_all_dicts():
     df = pd.read_csv('data/us_clean.csv')
@@ -200,11 +197,31 @@ def gen_all_dicts():
     #print(age_dict_2)
     #print(age_dict)
 
+def plot_attr(df, attr: str):
+    fig = plt.figure(figsize=(5, 5))
+    df.hist(column=attr)
+    plt.xlabel(attr, fontsize=15)
+    plt.ylabel('Frequency', fontsize=15)
+    plt.show()
 
 if __name__ == '__main__':
     # Preprocess datafile into cleaned US/EU files
     us_model = preprocess(OG_FILE_PATH, US_FILE_PATH, US, 'us')
     eu_model = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
+
+    #plot_attr(us_model, 'ConvertedCompYearly')
+    #plot_attr(eu_model, 'ConvertedCompYearly')
+
+    names = list(us_model.drop(['ConvertedCompYearly'], axis=1))
+    namesdf = us_model.drop(['ConvertedCompYearly'], axis=1)
+
+    x = np.asarray(us_model.drop(['ConvertedCompYearly'], axis=1))
+    y = np.asarray(us_model['ConvertedCompYearly'])
+
+    x_train, x_validate, y_train, y_validate = train_test_split(x, y, test_size=0.2, random_state=12345)
+
+    
+
 
     #print(age_dict)
 

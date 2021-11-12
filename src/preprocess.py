@@ -15,6 +15,7 @@ def rem_cols(row: list, cols: list):
         row.pop(col)   
     return row
 
+# Debug: check for missing values
 def print_missing_value_counts(df):
     print('Number of missing values per column:')
     for i in df:
@@ -23,10 +24,12 @@ def print_missing_value_counts(df):
             print(df.shape[0] - df[i].count(), end='')
         print()
 
+# Debug: check number of records and attributes
 def print_num_recs_attr(df):
     print('Number of records:', df.shape[0])
     print('Number of attributes:', df.shape[1])
 
+# Debug: check missing values and record/attribute count
 def debug_data_summary(df):
     print_num_recs_attr(df)
     print_missing_value_counts(df)
