@@ -1,7 +1,7 @@
 # main.py
 
 import pandas as pd
-import matplotlib.pyplot as plt
+
 import csv
 import statistics as st
 import math as mth
@@ -17,6 +17,7 @@ import numpy as np
 
 from preprocess import preprocess
 from decision_tree import best_tree_depth
+from plot import plot_attr
 
 OG_FILE_PATH = 'data/original_dataset.csv'
 #OG_FILE_PATH = 'data/original_dataset_sample.csv'
@@ -198,13 +199,6 @@ def gen_all_dicts():
     #print(age_dict_2)
     #print(age_dict)
 
-def plot_attr(df, attr: str):
-    fig = plt.figure(figsize=(5, 5))
-    df.hist(column=attr)
-    plt.xlabel(attr, fontsize=15)
-    plt.ylabel('Frequency', fontsize=15)
-    plt.show()
-
 if __name__ == '__main__':
     # Preprocess datafile into cleaned US/EU files
     us_model = preprocess(OG_FILE_PATH, US_FILE_PATH, US, 'us')
@@ -212,12 +206,12 @@ if __name__ == '__main__':
 
     #print(us_model.head())
 
-    #plot_attr(us_model, 'ConvertedCompYearly')
-    #plot_attr(eu_model, 'ConvertedCompYearly')
+    plot_attr(us_model, 'ConvertedCompYearly')
+    plot_attr(eu_model, 'ConvertedCompYearly')
 
     # Decision tree model
-    print(best_tree_depth(us_model, 0.2))
-    print(best_tree_depth(eu_model, 0.2))
+    #print(best_tree_depth(us_model, 0.2))
+    #print(best_tree_depth(eu_model, 0.2))
 
     names = list(us_model.drop(['ConvertedCompYearly'], axis=1))
     namesdf = us_model.drop(['ConvertedCompYearly'], axis=1)
