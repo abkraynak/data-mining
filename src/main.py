@@ -198,15 +198,15 @@ def gen_all_dicts():
 if __name__ == '__main__':
     # Preprocess datafile into cleaned US/EU files
     us_model = preprocess(OG_FILE_PATH, US_FILE_PATH, US, 'us')
-    eu_model = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
+    #eu_model = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
 
     # Decision tree model
-    us_dt = decision_tree(us_model, TEST_SPLIT, CROSS_VAL, True)
-    eu_dt = decision_tree(eu_model, TEST_SPLIT, CROSS_VAL, False)
+    #us_dt = decision_tree(us_model, TEST_SPLIT, CROSS_VAL, True)
+    #eu_dt = decision_tree(eu_model, TEST_SPLIT, CROSS_VAL, False)
 
     # Random forest model
-    us_rf = random_forest(us_model, TEST_SPLIT, False)
-    eu_rf = random_forest(eu_model, TEST_SPLIT, False)
+    us_rf = random_forest(us_model, TEST_SPLIT, CROSS_VAL, True)
+    #eu_rf = random_forest(eu_model, TEST_SPLIT, False)
 
     # Plot original salary frequencies
     #plot_attr(us_model, 'ConvertedCompYearly')
