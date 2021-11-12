@@ -203,13 +203,8 @@ def gen_all_dicts():
 
 if __name__ == '__main__':
     # Preprocess datafile into cleaned US/EU files
-    us_df = preprocess(OG_FILE_PATH, US_FILE_PATH, US, 'us')
-    eu_df = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
-
-
- 
-
-
+    us_model = preprocess(OG_FILE_PATH, US_FILE_PATH, US, 'us')
+    eu_model = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
 
     #print(age_dict)
 
