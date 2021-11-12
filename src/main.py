@@ -50,6 +50,7 @@ EU = [
 US = ['United States of America']
 
 TEST_SPLIT = 0.2
+CROSS_VAL = 5
 
 age_dict = {'Younger than 5 years': 0, '5 - 10 years': 1, '11 - 17 years': 2, '18 - 24 years': 3, 
     '25 - 34 years': 4, '35 - 44 years': 5, '45 - 54 years': 6, '55 - 64 years': 7, 'Older than 64 years': 8, 'NA': 9}
@@ -200,8 +201,8 @@ if __name__ == '__main__':
     eu_model = preprocess(OG_FILE_PATH, EU_FILE_PATH, EU, 'eu')
 
     # Decision tree model
-    us_dt = decision_tree(us_model, TEST_SPLIT, False)
-    eu_dt = decision_tree(eu_model, TEST_SPLIT, False)
+    us_dt = decision_tree(us_model, TEST_SPLIT, CROSS_VAL, True)
+    eu_dt = decision_tree(eu_model, TEST_SPLIT, CROSS_VAL, False)
 
     # Random forest model
     us_rf = random_forest(us_model, TEST_SPLIT, False)

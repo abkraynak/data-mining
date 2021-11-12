@@ -9,7 +9,7 @@ from sklearn import metrics
 from sklearn.tree import DecisionTreeRegressor, export_graphviz
 from sklearn.model_selection import *
 
-def best_tree_depth(model, x_train, y_train, test_split: float, verbose = False):
+def best_tree_depth(model, x_train, y_train, test_split: float, cross_val: int, verbose = False):
     score_list = ['neg_mean_squared_error', 'neg_mean_absolute_error']
     search_depths = [4, 5, 6, 7] # Tree depths to try, best is one with least error
     max_MSE = float('-inf')
@@ -25,7 +25,7 @@ def best_tree_depth(model, x_train, y_train, test_split: float, verbose = False)
         mean_score = []
         std_score = []
         for s in score_list:
-            dtr_10 = cross_val_score(dtr, x_train, y_train, scoring=s, cv=10, error_score='raise')
+            dtr_10 = cross_val_score(dtr, x_train, y_train, scoring=s, cv=cross_val, error_score='raise')
             mean = dtr_10.mean()
             std = dtr_10.std()
             mean_score.append(mean)
@@ -44,12 +44,12 @@ def best_tree_depth(model, x_train, y_train, test_split: float, verbose = False)
 
     return best_depth
 
-def model_decision_tree(model, x_train, y_train, test_split: float, verbose = False):
-    depth = best_tree_depth(model, x_train, y_train, test_split, verbose)
+def model_decision_tree(model, x_train, y_train, test_split: float, cross_val: int, verbose = False):
+    depth = best_tree_depth(model, x_train, y_train, test_split, cross_val, verbose)
     dt = DecisionTreeRegressor(max_depth=depth, min_samples_split=5, min_samples_leaf=5)
     return dt.fit(x_train, y_train)
 
-def get_dt_stats(data, pred, verbose = False):
+def get_dt_stats(data, pred, verbose = False) -> None:
     r2 = metrics.r2_score(data, pred)
     mae = metrics.mean_absolute_error(data, pred)
     mse = metrics.mean_squared_error(data, pred)
@@ -64,14 +64,14 @@ def print_dt_stats(r2: float, mae: float, mse: float, rmse: float) -> None:
     print('Root mean squared error', rmse)
     print()
 
-def decision_tree(model, test_split, verbose = False):
+def decision_tree(model, test_split: float, cross_val: int, verbose = False):
     # Set up training and validation sets as numpy arrays
     x = np.asarray(model.drop(['ConvertedCompYearly'], axis=1)) # All data except salaries
     y = np.asarray(model['ConvertedCompYearly']) # Salaries only
     x_train, x_validate, y_train, y_validate = train_test_split(x, y, test_size=test_split, random_state=12345)
 
     # Generate decision tree model
-    dt = model_decision_tree(model, x_train, y_train, test_split, verbose)
+    dt = model_decision_tree(model, x_train, y_train, test_split, cross_val, verbose)
 
     # Print accuracy statistics of training and validation sets
     tr_pred = dt.predict(x_train)
