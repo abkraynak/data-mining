@@ -10,36 +10,38 @@ from sklearn.tree import DecisionTreeRegressor, export_graphviz
 from sklearn.model_selection import *
 
 def best_tree_depth(model, x_train, y_train, test_split: float, cross_val: int, verbose = False):
-    score_list = ['neg_mean_squared_error', 'neg_mean_absolute_error']
-    search_depths = [4, 5, 6, 7] # Tree depths to try, best is one with least error
-    max_MSE = float('-inf')
+    # Adjust this to check different depths
+    depths = [4, 5, 6, 7] 
+
     best_depth = 0
 
-    # Use mean absolute error to identify the best tree depth
-    for d in search_depths:
+    score_list = ['neg_mean_squared_error', 'neg_mean_absolute_error']
+    max_err = float('-inf')
+
+    # Use MSE or MAE to select the lowest error
+    selected_test = score_list[1]
+
+    # Identify the tree depth with the lowest error
+    for d in depths:
         dtr = DecisionTreeRegressor(max_depth=d, min_samples_split=5, min_samples_leaf=5)
         if verbose:
             print(dtr)
             print('max_depth =', d)
-            print('{:.<25s}{:>20s}{:>20s}'.format('Metric', 'Mean', 'Std. Dev.'))
-        mean_score = []
-        std_score = []
+            print('{:<25s}{:>20s}{:>20s}'.format('Metric', 'Mean', 'Std Dev'))
         for s in score_list:
-            dtr_10 = cross_val_score(dtr, x_train, y_train, scoring=s, cv=cross_val, error_score='raise')
-            mean = dtr_10.mean()
-            std = dtr_10.std()
-            mean_score.append(mean)
-            std_score.append(std)
+            dtr_cvs = cross_val_score(dtr, x_train, y_train, scoring=s, cv=cross_val, error_score='raise')
+            mean = dtr_cvs.mean()
+            std = dtr_cvs.std()
             if verbose:
-                print('{:.<25s}{:>20.4f}{:>20.4f}'.format(s, mean, std))
-            if s == 'neg_mean_absolute_error' and mean > max_MSE:
-                max_MSE = mean
+                print('{:<25s}{:>20.4f}{:>20.4f}'.format(s, mean, std))
+            if s == selected_test and mean > max_err:
+                max_err = mean
                 best_depth = d
         if verbose:
             print()
 
     if verbose:
-        print('Best depth =', best_depth)
+        print('best_depth =', best_depth)
         print()
 
     return best_depth
