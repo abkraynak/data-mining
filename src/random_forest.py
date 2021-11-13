@@ -73,7 +73,7 @@ def print_rf_stats(r2: float, mae: float, mse: float, rmse: float) -> None:
     print('Root mean squared error', rmse)
     print()
 
-def random_forest(model, test_split: float, cross_val: int, verbose = False):
+def random_forest(model, country: str, test_split: float, cross_val: int, verbose = False):
     # Set up training and validation sets as numpy arrays
     x = np.asarray(model.drop(['ConvertedCompYearly'], axis=1)) # All data except salaries
     y = np.asarray(model['ConvertedCompYearly']) # Salaries only
@@ -101,5 +101,6 @@ def random_forest(model, test_split: float, cross_val: int, verbose = False):
     ax.plot([y_validate.min(), y_validate.max()], [y_validate.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Actual')
     ax.set_ylabel('Predicted')
-    plt.title('RF: Predicted vs Actual ConvertedCompYearly')
+    plt.suptitle(country + ' RF: Predicted vs Actual ConvertedCompYearly')
+    plt.title('test_split=' + str(test_split) + ' cross_val=' + str(cross_val))
     plt.show()
