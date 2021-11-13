@@ -2,6 +2,8 @@
 
 import math as mth
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import cross_validate, cross_val_score
 from sklearn.model_selection import train_test_split
@@ -51,9 +53,25 @@ def best_tree_number_depth(model, x_train, y_train, test_split: float, cross_val
     return best_num_trees, best_depth
 
 def model_random_forest(model, x_train, y_train, test_split: float, cross_val: int, verbose = False):
-    best_num_trees, depth = best_tree_number_depth(model, x_train, y_train, test_split, cross_val, verbose)
-    print(best_num_trees)
-    print(depth)
+    num_trees, depth = best_tree_number_depth(model, x_train, y_train, test_split, cross_val, verbose)
+    rf = RandomForestRegressor(n_estimators=num_trees, criterion='squared_error', max_depth=depth, min_samples_split=2, 
+        min_samples_leaf=1, max_features='auto', n_jobs=1, bootstrap=True, random_state=12345)
+    return rf.fit(x_train, y_train)
+
+def get_rf_stats(data, pred, verbose = False) -> None:
+    r2 = metrics.r2_score(data, pred)
+    mae = metrics.mean_absolute_error(data, pred)
+    mse = metrics.mean_squared_error(data, pred)
+    rmse = np.sqrt(mse)
+    if verbose:
+        print_rf_stats(r2, mae, mse, rmse)
+
+def print_rf_stats(r2: float, mae: float, mse: float, rmse: float) -> None:
+    print('R-squared:', r2)
+    print('Mean absolute error:', mae)
+    print('Mean squared error', mse)
+    print('Root mean squared error', rmse)
+    print()
 
 def random_forest(model, test_split: float, cross_val: int, verbose = False):
     # Set up training and validation sets as numpy arrays
@@ -63,3 +81,25 @@ def random_forest(model, test_split: float, cross_val: int, verbose = False):
 
     # Generate random forest model
     rf = model_random_forest(model, x_train, y_train, test_split, cross_val, verbose)
+
+
+    # Print accuracy statistics of training and validation sets
+    tr_pred = rf.predict(x_train)
+    va_pred = rf.predict(x_validate)
+    get_rf_stats(y_train, tr_pred, verbose) # Training results
+    get_rf_stats(y_validate, va_pred, verbose) # Validation results
+
+    # Print most important attributes to the random forest
+    ind_model = model.drop(['ConvertedCompYearly'], axis=1)
+    lst = list(ind_model.columns)
+    col_impt = pd.Series(rf.feature_importances_, index=lst)
+    print(col_impt.nlargest(10).sort_values(ascending=False))
+
+    # Scatterplot of actual vs predicted values of testing set
+    fig, ax = plt.subplots()
+    ax.scatter(y_validate, va_pred)
+    ax.plot([y_validate.min(), y_validate.max()], [y_validate.min(), y.max()], 'k--', lw=4)
+    ax.set_xlabel('Actual')
+    ax.set_ylabel('Predicted')
+    plt.title('RF: Predicted vs Actual ConvertedCompYearly')
+    plt.show()

@@ -205,8 +205,8 @@ if __name__ == '__main__':
     #eu_dt = decision_tree(eu_model, TEST_SPLIT, CROSS_VAL, False)
 
     # Random forest model
-    us_rf = random_forest(us_model, TEST_SPLIT, CROSS_VAL, False)
-    eu_rf = random_forest(eu_model, TEST_SPLIT, CROSS_VAL, False)
+    us_rf = random_forest(us_model, TEST_SPLIT, CROSS_VAL, True)
+    #eu_rf = random_forest(eu_model, TEST_SPLIT, CROSS_VAL, False)
 
     # Plot original salary frequencies
     #plot_attr(us_model, 'ConvertedCompYearly')

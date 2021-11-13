@@ -78,22 +78,22 @@ def decision_tree(model, test_split: float, cross_val: int, verbose = False):
     # Print accuracy statistics of training and validation sets
     tr_pred = dt.predict(x_train)
     va_pred = dt.predict(x_validate)
-    get_dt_stats(y_train, tr_pred, verbose)
-    get_dt_stats(y_validate, va_pred, verbose)
+    get_dt_stats(y_train, tr_pred, verbose) # Training results
+    get_dt_stats(y_validate, va_pred, verbose) # Validation results
 
-    # Print most important attributes to the decisiont ree
+    # Print most important attributes to the decision tree
     ind_model = model.drop(['ConvertedCompYearly'], axis=1)
     lst = list(ind_model.columns)
     col_impt = pd.Series(dt.feature_importances_, index=lst)
     print(col_impt.nlargest(10).sort_values(ascending=False))
 
-    # Scatterplot of actual vs predicted of testing set
+    # Scatterplot of actual vs predicted values of testing set
     fig, ax = plt.subplots()
     ax.scatter(y_validate, va_pred)
     ax.plot([y_validate.min(), y_validate.max()], [y_validate.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Actual')
     ax.set_ylabel('Predicted')
-    plt.title('Predicted vs Actual ConvertedCompYearly')
+    plt.title('DT: Predicted vs Actual ConvertedCompYearly')
     plt.show()
 
     # Show decision tree image
