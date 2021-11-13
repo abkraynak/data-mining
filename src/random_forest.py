@@ -1,13 +1,12 @@
 # random_forest.py
 
-import math as mth
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import cross_validate, cross_val_score
-from sklearn.model_selection import train_test_split
-from sklearn import metrics
+from sklearn.model_selection import cross_val_score, train_test_split
+
+from debug import get_model_stats
 
 def best_tree_number_depth(model, x_train, y_train, test_split: float, cross_val: int, verbose = False):
     # Adjust these to check different depths and tree numbers
@@ -58,21 +57,6 @@ def model_random_forest(model, x_train, y_train, test_split: float, cross_val: i
         min_samples_leaf=1, max_features='auto', n_jobs=1, bootstrap=True, random_state=12345)
     return rf.fit(x_train, y_train)
 
-def get_rf_stats(data, pred, verbose = False) -> None:
-    r2 = metrics.r2_score(data, pred)
-    mae = metrics.mean_absolute_error(data, pred)
-    mse = metrics.mean_squared_error(data, pred)
-    rmse = np.sqrt(mse)
-    if verbose:
-        print_rf_stats(r2, mae, mse, rmse)
-
-def print_rf_stats(r2: float, mae: float, mse: float, rmse: float) -> None:
-    print('R-squared:', r2)
-    print('Mean absolute error:', mae)
-    print('Mean squared error', mse)
-    print('Root mean squared error', rmse)
-    print()
-
 def random_forest(model, country: str, test_split: float, cross_val: int, verbose = False):
     # Set up training and validation sets as numpy arrays
     x = np.asarray(model.drop(['ConvertedCompYearly'], axis=1)) # All data except salaries
@@ -86,8 +70,8 @@ def random_forest(model, country: str, test_split: float, cross_val: int, verbos
     # Print accuracy statistics of training and validation sets
     tr_pred = rf.predict(x_train)
     va_pred = rf.predict(x_validate)
-    get_rf_stats(y_train, tr_pred, verbose) # Training results
-    get_rf_stats(y_validate, va_pred, verbose) # Validation results
+    get_model_stats(y_train, tr_pred, verbose) # Training results
+    get_model_stats(y_validate, va_pred, verbose) # Validation results
 
     # Print most important attributes to the random forest
     ind_model = model.drop(['ConvertedCompYearly'], axis=1)

@@ -2,12 +2,11 @@
 
 import numpy as np
 import pandas as pd
-import graphviz as gv
 import matplotlib.pyplot as plt
-from pydotplus.graphviz import *
-from sklearn import metrics
-from sklearn.tree import DecisionTreeRegressor, export_graphviz
-from sklearn.model_selection import *
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.model_selection import cross_val_score, train_test_split
+
+from debug import get_model_stats
 
 def best_tree_depth(model, x_train, y_train, test_split: float, cross_val: int, verbose = False):
     # Adjust this to check different depths
@@ -51,21 +50,6 @@ def model_decision_tree(model, x_train, y_train, test_split: float, cross_val: i
     dt = DecisionTreeRegressor(max_depth=depth, min_samples_split=5, min_samples_leaf=5)
     return dt.fit(x_train, y_train)
 
-def get_dt_stats(data, pred, verbose = False) -> None:
-    r2 = metrics.r2_score(data, pred)
-    mae = metrics.mean_absolute_error(data, pred)
-    mse = metrics.mean_squared_error(data, pred)
-    rmse = np.sqrt(mse)
-    if verbose:
-        print_dt_stats(r2, mae, mse, rmse)
-
-def print_dt_stats(r2: float, mae: float, mse: float, rmse: float) -> None:
-    print('R-squared:', r2)
-    print('Mean absolute error:', mae)
-    print('Mean squared error', mse)
-    print('Root mean squared error', rmse)
-    print()
-
 def decision_tree(model, country: str, test_split: float, cross_val: int, verbose = False):
     # Set up training and validation sets as numpy arrays
     x = np.asarray(model.drop(['ConvertedCompYearly'], axis=1)) # All data except salaries
@@ -78,8 +62,8 @@ def decision_tree(model, country: str, test_split: float, cross_val: int, verbos
     # Print accuracy statistics of training and validation sets
     tr_pred = dt.predict(x_train)
     va_pred = dt.predict(x_validate)
-    get_dt_stats(y_train, tr_pred, verbose) # Training results
-    get_dt_stats(y_validate, va_pred, verbose) # Validation results
+    get_model_stats(y_train, tr_pred, verbose) # Training results
+    get_model_stats(y_validate, va_pred, verbose) # Validation results
 
     # Print most important attributes to the decision tree
     ind_model = model.drop(['ConvertedCompYearly'], axis=1)
