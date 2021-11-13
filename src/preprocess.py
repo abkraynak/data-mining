@@ -3,6 +3,8 @@
 import csv as csv
 import pandas as pd
 
+from debug import print_missing_value_counts, print_num_recs_attr, debug_data_summary
+
 # List of column indices in original dataset to remove
 del_cols = [46, 45, 44, 43, 42, 41, 37, 36, 32, 31, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 14, 13, 11, 8, 6, 5, 0]
 
@@ -14,25 +16,6 @@ def rem_cols(row: list, cols: list):
     for col in cols:
         row.pop(col)   
     return row
-
-# Debug: check for missing values
-def print_missing_value_counts(df):
-    print('Number of missing values per column:')
-    for i in df:
-        print(i, ': ', end='')
-        if df[i].count() < df.shape[0]:
-            print(df.shape[0] - df[i].count(), end='')
-        print()
-
-# Debug: check number of records and attributes
-def print_num_recs_attr(df):
-    print('Number of records:', df.shape[0])
-    print('Number of attributes:', df.shape[1])
-
-# Debug: check missing values and record/attribute count
-def debug_data_summary(df):
-    print_num_recs_attr(df)
-    print_missing_value_counts(df)
 
 # Given a CSV file, generate a new CSV file that contains only the rows/columns we are looking for
 def clean_csv(path: str, countries: list, sel: str):
@@ -59,7 +42,7 @@ def clean_csv(path: str, countries: list, sel: str):
 def clean_df(path: str):
     df = pd.read_csv(path)
     
-    debug_data_summary(df) # Data summary
+    #debug_data_summary(df) # Data summary
 
     # Replace missing values with NA or 0
     df['US_State'].fillna('NA', inplace=True)
@@ -77,7 +60,7 @@ def clean_df(path: str):
     df['Age'].fillna('NA', inplace=True)
     df['Trans'].fillna('NA', inplace=True)
 
-    debug_data_summary(df) # Data summary
+    #debug_data_summary(df) # Data summary
     return df
 
 def encode(df, nom_cols: list):
@@ -87,10 +70,9 @@ def encode(df, nom_cols: list):
     return model
 
 def preprocess(og_path: str, co_path: str, countries: list, sel: str):
-    print('Running pre-processing . . . ')
+    print('Running pre-processing . . . ', end='')
     clean_csv(og_path, countries, sel)
     df = clean_df(co_path)
-    print(df)
     df_model = encode(df, nom_cols)
-    print('Complete')
+    print('Complete!')
     return df_model
