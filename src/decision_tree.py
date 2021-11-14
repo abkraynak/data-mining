@@ -10,7 +10,7 @@ from debug import get_model_stats
 
 def best_tree_depth(model, x_train, y_train, test_split: float, cross_val: int, verbose = False):
     # Adjust this to check different depths
-    depths = [4, 5, 6, 7] 
+    depths = [4, 5, 6, 7, 8, 9] 
 
     best_depth = 0
 
