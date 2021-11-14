@@ -68,5 +68,5 @@ data and the European data.
 
 
 ## Authors
-- Andrew Kraynak [LinkedIn](https://www.linkedin.com/in/abkraynak/) [Github](https://github.com/abkraynak)
-- Samuel Kaczynski [LinkedIn](https://www.linkedin.com/in/samuel-kaczynski-425926196/) [Github](https://github.com/SKalltheway)
+- Andrew Kraynak ([LinkedIn](https://www.linkedin.com/in/abkraynak/), [Github](https://github.com/abkraynak))
+- Samuel Kaczynski ([LinkedIn](https://www.linkedin.com/in/samuel-kaczynski-425926196/), [Github](https://github.com/SKalltheway))
