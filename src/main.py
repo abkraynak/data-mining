@@ -34,8 +34,8 @@ EU = [
 
 US = ['United States of America']
 
-TEST_SPLIT = 0.2
-CROSS_VAL = 5
+TEST_SPLIT = 0.3
+CROSS_VAL = 10
 
 if __name__ == '__main__':
     # Preprocess datafile into cleaned US/EU files
@@ -47,8 +47,8 @@ if __name__ == '__main__':
     eu_dt = decision_tree(eu_model, 'EU', TEST_SPLIT, CROSS_VAL, True)
 
     # Random forest model
-    us_rf = random_forest(us_model, 'US', TEST_SPLIT, CROSS_VAL, True)
-    eu_rf = random_forest(eu_model, 'EU', TEST_SPLIT, CROSS_VAL, True)
+    #us_rf = random_forest(us_model, 'US', TEST_SPLIT, CROSS_VAL, True)
+    #eu_rf = random_forest(eu_model, 'EU', TEST_SPLIT, CROSS_VAL, True)
 
     # Plot original salary frequencies
     #plot_attr(us_model, 'ConvertedCompYearly')
