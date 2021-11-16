@@ -3,7 +3,8 @@ A prototype data mining application to compare the accuracy of decision tree and
 predict annual compensation of tech workers in the US and Europe.
 
 ## Objectives
-
+To create a model to accurately estimate a devloper's salary given demographic and technical information about that 
+person. This can be a helpful tool for employees to determine if they are being paid a fair salary.
 
 ## Usage
 To run, download the repository and execute the file `main.py` in the `src` directory with your python path variable. 
@@ -45,8 +46,7 @@ accurate model, we trained several models with different parameters and selected
 validate. The parameter we changed was the maximum depth level of each tree. Additional factors that affect the model 
 are the testing split percentage and the cross validation folds. For our models, we used 20% of the data as testing and 
 80% as training and a cross validation value of 10. Out of every combination we tried, we found that a maximum depth of 
-____ADD RES HERE____ resulted in the most accurate decision tree model. The accuracy of the model was ____ADD RES 
-HERE____. This model will output the tree itself, several statistics of the model such as R-squared, mean absolute 
+8 resulted in the most accurate decision tree model. The accuracy of the model was 0.625. This model will output the tree itself, several statistics of the model such as R-squared, mean absolute 
 error, and mean squared error, and the ten attributes that have the largest weight in determining the result. With the 
 best model selected, we then validated it against the testing data set. These steps of model generation were done for 
 both the US data and the European data.
@@ -57,15 +57,15 @@ accurate model, we trained several models with different parameters and selected
 validate. The parameters we changed were the number of trees to estimate with and the maximum depth level of each tree. 
 Additional factors that affect the model are the testing split percentage and the cross validation folds. For our 
 models, we used 20% of the data as testing and 80% as training and a cross validation value of 10. Out of every 
-combination we tried, we found that ____ADD RES HERE____ trees in the forest with a maximum depth of ____ADD RES 
-HERE____ resulted in the most accurate random forest model. The accuracy of the model was ____ADD RES HERE____. This 
+combination we tried, we found that 125 trees in the forest with a maximum depth of 10 resulted in the most accurate random forest model. The accuracy of the model was 0.841. This 
 model will output the tree itself, several statistics of the model such as R-squared, mean absolute error, and mean 
 squared error, and the ten attributes that have the largest weight in determining the result. With the best model 
 selected, we then validated it against the testing data set. These steps of model generation were done for both the US 
 data and the European data.
 
 ## Results and Analysis
-
+With out models, we found that the random forest was more accurate than a single decision tree. We also found that 
+models of US data were more accurate than models of European data.
 
 ## Authors
 - Andrew Kraynak ([LinkedIn](https://www.linkedin.com/in/abkraynak/), [Github](https://github.com/abkraynak))
